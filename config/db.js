@@ -20,10 +20,4 @@ var User = sequelize.define('user', {
     role: { type: Sequelize.ENUM("admin", "user"), defaultValue: "user" },
 });
 
-var LoginHistory = sequelize.define('loginHistory', {
-    userId: { type: Sequelize.INTEGER, allowNull: false },
-    email: { type: Sequelize.STRING, allowNull: false },
-    loginTime: { type: Sequelize.DATE, defaultValue: Sequelize.NOW},
-});
-
-module.exports = { User, LoginHistory };
+module.exports = { User };

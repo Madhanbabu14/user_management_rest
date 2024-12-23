@@ -2,23 +2,10 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt')
-const { User, LoginHistory } = require('../config/db')
+const { User} = require('../config/db')
 const VerifyToken = require('../middleware/VerifyToken')
 
 router.use(bodyParser.json());
-
-router.get('/login-history', async (req, res) => {
-    try {
-        const loginHistory = await LoginHistory.findAll({
-            raw: true,
-            order: [['loginTime', 'DESC']]
-        });
-        return res.status(200).send({ message: 'Login history fetched successfully', loginHistory });
-    } catch (error) {
-        console.error("Error fetching login history:", error);
-        return res.status(500).send({ message: 'Internal server error' });
-    }
-});
 
 router.get('/', VerifyToken, async (req, res) => {
     try {
@@ -31,9 +18,8 @@ router.get('/', VerifyToken, async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', VerifyToken, async (req, res) => {
     try {
-        console.log("res.user", req.user)
         const find_user = await User.findOne({ raw: true, where: { email: req.body.email } });
         if (find_user) return res.status(500).send('Email already present');
         req.body.password = await bcrypt.hash(req.body.password, 8)

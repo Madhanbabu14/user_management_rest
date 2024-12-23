@@ -10,13 +10,11 @@ const VerifyToken = async (req, res, next) => {
 
     jwt.verify(token, '@#12@123#', async (err, decoded) => {
         if (err) {
-            console.log("err", err)
             return res.status(401).send({ auth: false, message: 'Failed to authenticate token' });
         }
 
         try {
             const obj = { username: decoded.username };
-            console.log("obj", obj)
 
             const userFind = await User.findOne({ raw: true, where: obj });
 

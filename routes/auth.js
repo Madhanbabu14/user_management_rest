@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { User, LoginHistory } = require('../config/db');
+const { User } = require('../config/db');
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
@@ -16,12 +16,9 @@ router.post('/login', async (req, res) => {
             return res.status(401).send({ message: 'Invalid credentials provided' });
         }
         const token = jwt.sign({ username: find_user.username, email: find_user.email }, '@#12@123#', { expiresIn: '1h' })
-        await LoginHistory.create({
-            userId: find_user.id,
-            email: find_user.email,
-        });
         return res.status(200).send({ message: 'Login successful', user: find_user, token });
     } catch (error) {
+        console.log("err", error)
         return res.status(500).send({ message: 'Internal server error' });
     }
 });
